@@ -1,11 +1,74 @@
-import React from "react";
+import React, { useState, type FormEvent } from "react";
 import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
+import toast from "react-hot-toast";
+import type RegisterData from "@/models/RegisterData";
+import { registerUser } from "@/services/AuthService";
+import { useNavigate } from "react-router";
 
 export default function Signup() {
+  const [data, setData] = useState<RegisterData>({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  const hanldeInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    // console.log(event.target.name);
+    // console.log(event.target.value);
+    setData((value) => ({
+      ...value,
+      [event.target.name]: event.target.value,
+    }));
+  };
+
+  const handleFormSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    console.log(data);
+
+    //validation
+    if (data.name.trim() === "") {
+      toast.error("Name is required");
+      return;
+    }
+
+    if (data.email.trim() === "") {
+      toast.error("Email is required");
+      return;
+    }
+
+    if (data.password.trim() === "") {
+      toast.error("Password is required");
+      return;
+    }
+
+    //submit form for registration
+    try {
+      const result = await registerUser(data);
+      console.log(result);
+      toast.success("User registered successfully");
+      setData({
+        name: "",
+        email: "",
+        password: "",
+      });
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+      toast.error("Error occurred during registration");
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center  p-4">
-      <div className="w-full max-w-md bg-gray-900 bg-opacity-70 backdrop-blur-lg rounded-2xl shadow-2xl p-8">
+      <form
+        onSubmit={handleFormSubmit}
+        className="w-full max-w-md bg-gray-900 bg-opacity-70 backdrop-blur-lg rounded-2xl shadow-2xl p-8"
+      >
         <h2 className="text-3xl font-bold text-white text-center mb-6">
           Create Account
         </h2>
@@ -20,6 +83,9 @@ export default function Signup() {
             id="name"
             placeholder="Your full name"
             className="w-full bg-gray-800 text-white placeholder-gray-400"
+            name="name"
+            value={data.name}
+            onChange={hanldeInputChange}
           />
         </div>
 
@@ -33,6 +99,9 @@ export default function Signup() {
             id="email"
             placeholder="you@example.com"
             className="w-full bg-gray-800 text-white placeholder-gray-400"
+            name="email"
+            value={data.email}
+            onChange={hanldeInputChange}
           />
         </div>
 
@@ -46,6 +115,9 @@ export default function Signup() {
             id="password"
             placeholder="********"
             className="w-full bg-gray-800 text-white placeholder-gray-400"
+            name="password"
+            value={data.password}
+            onChange={hanldeInputChange}
           />
         </div>
 
@@ -91,7 +163,7 @@ export default function Signup() {
             Login
           </a>
         </p>
-      </div>
+      </form>
     </div>
   );
 }
