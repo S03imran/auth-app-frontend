@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 import type RegisterData from "@/models/RegisterData";
 import { registerUser } from "@/services/AuthService";
 import { useNavigate } from "react-router";
+import { Alert, AlertTitle } from "@/components/ui/alert";
+import { CheckCircle2Icon } from "lucide-react";
 
 export default function Signup() {
   const [data, setData] = useState<RegisterData>({
@@ -14,7 +16,7 @@ export default function Signup() {
   });
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<any>(null);
   const navigate = useNavigate();
 
   const hanldeInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,6 +62,7 @@ export default function Signup() {
     } catch (error) {
       console.log(error);
       toast.error("Error occurred during registration");
+      setError(error);
     }
   };
 
@@ -69,6 +72,18 @@ export default function Signup() {
         onSubmit={handleFormSubmit}
         className="w-full max-w-md bg-gray-900 bg-opacity-70 backdrop-blur-lg rounded-2xl shadow-2xl p-8"
       >
+        {error && (
+          <div className="mt-6 flex-col">
+            <Alert variant={"destructive"}>
+              <CheckCircle2Icon />
+              <AlertTitle>
+                {error?.response
+                  ? error?.response?.data?.message
+                  : error?.message}
+              </AlertTitle>
+            </Alert>
+          </div>
+        )}
         <h2 className="text-3xl font-bold text-white text-center mb-6">
           Create Account
         </h2>
