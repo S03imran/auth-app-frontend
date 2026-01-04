@@ -7,6 +7,7 @@ import { registerUser } from "@/services/AuthService";
 import { useNavigate } from "react-router";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2Icon } from "lucide-react";
+import OAuth2Buttons from "@/components/OAuth2Buttons";
 
 export default function Signup() {
   const [data, setData] = useState<RegisterData>({
@@ -147,29 +148,7 @@ export default function Signup() {
 
         {/* Social Signup Buttons */}
         <div className="flex flex-col gap-3">
-          <Button
-            variant="outline"
-            className="flex items-center justify-center gap-2 border-gray-600 text-white hover:bg-gray-700"
-          >
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
-              alt="Google"
-              className="w-5 h-5"
-            />
-            Continue with Google
-          </Button>
-
-          <Button
-            variant="outline"
-            className="flex items-center justify-center gap-2 border-gray-600 text-white hover:bg-gray-700"
-          >
-            <img
-              src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-              alt="GitHub"
-              className="w-5 h-5"
-            />
-            Continue with GitHub
-          </Button>
+          <OAuth2Buttons />
         </div>
 
         <p className="text-gray-400 text-center mt-6 text-sm">

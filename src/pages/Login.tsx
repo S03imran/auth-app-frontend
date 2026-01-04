@@ -9,6 +9,7 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2Icon } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 import useAuth from "@/auth/store";
+import OAuth2Buttons from "@/components/OAuth2Buttons";
 
 export default function Login() {
   const [loginData, setLoginData] = useState<LoginData>({
@@ -129,33 +130,11 @@ export default function Login() {
           <span className="px-2 text-gray-400 text-sm">OR</span>
           <hr className="flex-grow border-gray-600" />
         </div>
+        <div>
+          <OAuth2Buttons />
+        </div>
 
         {/* Social Buttons */}
-        <div className="flex flex-col gap-3">
-          <Button
-            variant="outline"
-            className="flex items-center justify-center gap-2 border-gray-600 text-white hover:bg-gray-700"
-          >
-            <img
-              src="https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
-              alt="Google"
-              className="w-5 h-5"
-            />
-            Continue with Google
-          </Button>
-
-          <Button
-            variant="outline"
-            className="flex items-center justify-center gap-2 border-gray-600 text-white hover:bg-gray-700"
-          >
-            <img
-              src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
-              alt="GitHub"
-              className="w-5 h-5"
-            />
-            Continue with GitHub
-          </Button>
-        </div>
 
         <p className="text-gray-400 text-center mt-6 text-sm">
           Don’t have an account?{" "}
