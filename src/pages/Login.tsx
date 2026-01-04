@@ -8,6 +8,7 @@ import { useNavigate } from "react-router";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle2Icon } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
+import useAuth from "@/auth/store";
 
 export default function Login() {
   const [loginData, setLoginData] = useState<LoginData>({
@@ -17,6 +18,8 @@ export default function Login() {
 
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
+  const login = useAuth((state) => state.login);
+
   const navigate = useNavigate();
   const hanldeInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setLoginData({
@@ -43,7 +46,8 @@ export default function Login() {
     //server call for login
     try {
       setLoading(true);
-      const userInfo = await loginUser(loginData);
+      const userInfo = await login(loginData);
+      //const userInfo = await loginUser(loginData);
       toast.success("Login Success");
       console.log(userInfo);
       navigate("/dashboard");

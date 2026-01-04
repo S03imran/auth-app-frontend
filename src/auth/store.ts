@@ -1,0 +1,80 @@
+import type LoginData from "@/models/LoginData";
+import type LoginResponseData from "@/models/LoginResponseData";
+import type User from "@/models/User";
+import { loginUser, logoutUser } from "@/services/AuthService";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
+
+const LOCAL_KEY = "app_state";
+
+type AuthState = {
+  accessToken: string | null;
+  user: User | null;
+  authStatus: boolean;
+  authLoading: boolean;
+  login: (loginData: LoginData) => Promise<LoginResponseData>;
+  logout: (silent?: boolean) => void;
+  checkLogin: () => boolean | undefined;
+};
+
+//logic for global state
+const useAuth = create<AuthState>()(
+  persist(
+    (set, get) => ({
+      accessToken: null,
+      user: null,
+      authStatus: false,
+      authLoading: false,
+      login: async (loginData) => {
+        console.log("Started login");
+        set({ authLoading: true });
+        try {
+          const LoginResponseData = await loginUser(loginData);
+          console.log(LoginResponseData);
+          set({
+            accessToken: LoginResponseData.accessToken,
+            user: LoginResponseData.user,
+            authStatus: true,
+          });
+          return LoginResponseData;
+        } catch (error) {
+          throw error;
+        } finally {
+          set({
+            authLoading: false,
+          });
+        }
+      },
+      logout: async (silent = false) => {
+        try {
+          // if (!silent) {
+          //   await logoutUser();
+          // }
+          set({
+            authLoading: true,
+          });
+          await logoutUser();
+        } catch (error) {
+        } finally {
+          // await logoutUser();
+          set({
+            authLoading: false,
+          });
+        }
+        set({
+          accessToken: null,
+          user: null,
+          authLoading: false,
+          authStatus: false,
+        });
+      },
+      checkLogin: () => {
+        if (get().accessToken && get().authStatus) return true;
+        else false;
+      },
+    }),
+    { name: LOCAL_KEY }
+  )
+);
+
+export default useAuth;
